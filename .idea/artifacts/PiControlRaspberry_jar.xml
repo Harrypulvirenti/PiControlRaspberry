@@ -1,0 +1,27 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PiControlRaspberry:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PiControlRaspberry_jar</output-path>
+    <root id="archive" name="PiControlRaspberry.jar">
+      <element id="module-output" name="PiControlRaspberry" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/httpcomponents-client-4.5.2/lib/commons-codec-1.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/httpcomponents-client-4.5.2/lib/commons-logging-1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/httpcomponents-client-4.5.2/lib/fluent-hc-4.5.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/httpcomponents-client-4.5.2/lib/httpclient-4.5.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/httpcomponents-client-4.5.2/lib/httpclient-cache-4.5.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/httpcomponents-client-4.5.2/lib/httpclient-win-4.5.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/httpcomponents-client-4.5.2/lib/httpcore-4.4.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/httpcomponents-client-4.5.2/lib/httpmime-4.5.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/httpcomponents-client-4.5.2/lib/jna-4.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/httpcomponents-client-4.5.2/lib/jna-platform-4.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/pi4j-1.1/lib/pi4j-core.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/pi4j-1.1/lib/pi4j-device.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/pi4j-1.1/lib/pi4j-example.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/pi4j-1.1/lib/pi4j-gpio-extension.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/pi4j-1.1/lib/pi4j-service.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/xstream-1.4.9/lib/xstream-1.4.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/xstream-1.4.9/lib/xstream-benchmark-1.4.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/xstream-1.4.9/lib/xstream-hibernate-1.4.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Library/xstream-1.4.9/lib/xstream-jmh-1.4.9.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
