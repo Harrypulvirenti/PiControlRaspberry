@@ -36,9 +36,9 @@ public class GPIOController {
     }
    
   public int getDigitalOutputPin(String identifier){
-      int pin=getFreePin();
+      int pinNumber=getFreePin();
       GpioPinDigitalOutput GPIOPin=null;
-      switch(pin){
+      switch(pinNumber){
               case 0:              
               GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_00, identifier, PinState.LOW);
               break;
@@ -131,10 +131,12 @@ public class GPIOController {
               break;
       }
      GPIOPin.setShutdownOptions(true, PinState.LOW);
-     GPIOPin newPin= new GPIOPin(pin, GPIOPin);
-     allPin.remove(pin);
-     allPin.add(pin, newPin);
-      return pin;
+     GPIOPin newPin= new GPIOPin(pinNumber, GPIOPin);
+      newPin.setPinIdentifier(identifier);
+
+     allPin.remove(pinNumber);
+     allPin.add(pinNumber, newPin);
+      return pinNumber;
   }
   
   public void setDigitalPinState(int pinNumber,int state){

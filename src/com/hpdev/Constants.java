@@ -14,4 +14,6 @@ public class Constants {
     public static final String BACKUP_FILE_NAME="backup.xml";
     public static final String LOGIN_MESSAGE="Inizializzazione servizi\n\nLogin Key: ";
 
+    public static final String SEND_WAIT_MESSAGE="ok_send_me";
+
 }

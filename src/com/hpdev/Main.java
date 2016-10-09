@@ -24,17 +24,20 @@ import org.apache.http.message.BasicNameValuePair;
 public class Main {
 
 
-    private static String IP=null;
-    private static TCPServer Server=null;
-    private static GPIOController GPIO;
-    private static int pin;
-    private static String LoginKey;
-    private static  XMLWrapper fileWrapper;
+    private String IP=null;
+    private TCPServer Server=null;
+    private GPIOController controllerGPIO;
+    private String LoginKey;
+    private  XMLWrapper fileWrapper=null;
+    private ArrayList<Room> roomList;
+
 
     public static void main(String[] args) {
 
+        Main myExecution=new Main();
+
         if(args.length == 0){
-            if(!loadBackupFile()){
+            if(!myExecution.loadBackupFile()){
                 System.out.println(Constants.Error_LoginKey);
                 System.exit(-1);}
 
@@ -42,23 +45,56 @@ public class Main {
             System.out.println(Constants.Error_LoginKeyShort);
             System.exit(-1);
         } else{
-            LoginKey=args[0];
-            storeBackupFile();
+            myExecution.setLoginKey(args[0]);
+            myExecution.storeBackupFile();
         }
 
-        System.out.println(Constants.LOGIN_MESSAGE+LoginKey);
+        System.out.println(Constants.LOGIN_MESSAGE+myExecution.LoginKey);
 
         //GPIO=new GPIOController();
         //pin=GPIO.getDigitalOutputPin("led");
-       // StartIPUpdater();
-        StartServer();
+        
+        if(!myExecution.isFileWrapperEmpty()){
+            myExecution.initGPIOPin();
+            
+        }else{
+            myExecution.initRoomList();
+        }
+
+        myExecution.StartIPUpdater();
+        myExecution.StartServer();
 
         while(true);
 
 
     }
 
-    private static void storeBackupFile() {
+    public void initRoomList(){
+        roomList=new ArrayList<Room>();
+    }
+
+    public void setLoginKey(String loginKey) {
+        this.LoginKey = loginKey;
+    }
+
+    public boolean isFileWrapperEmpty(){
+
+        if(fileWrapper!=null){
+           return false;
+        }
+
+        return true;
+    }
+
+
+    private void initGPIOPin() {
+
+
+
+
+    }
+
+    private void storeBackupFile() {
         XStream xstream = new XStream(new DomDriver());
 
 
@@ -80,7 +116,7 @@ public class Main {
 
     }
 
-    private static boolean loadBackupFile() {
+    private boolean loadBackupFile() {
         boolean ret=false;
 
         File fileDir = new File(Constants.BACKUP_FILE_NAME);
@@ -124,30 +160,19 @@ public class Main {
         }
     }
 
-    private static void StartIPUpdater(){
+    private void StartIPUpdater(){
         Timer timer = new Timer();
         timer.schedule(new IPUpdater(), 0, 600000);
     }
 
 
     private static int executeCommand(int command){
-        int ret=-1;
-        if(command==0){
-            GPIO.setDigitalPinState(pin, GPIO.LOW);
-            ret=0;
-        }
-        if(command==1){
-            GPIO.setDigitalPinState(pin, GPIO.HIGH);
-            ret=0;
-        }
-        if(command==2){
-            ret=26;
-        }
-        return ret;
+        return 0;
     }
 
 
-    private static class IPUpdater extends TimerTask{
+
+    private class IPUpdater extends TimerTask{
 
         private void SendIPToServer() {
 
@@ -189,7 +214,7 @@ public class Main {
         }
     }
 
-    private static void GetIP() {
+    private void GetIP() {
         URL whatismyip=null;
         String ip=null;
         try {
@@ -207,13 +232,13 @@ public class Main {
     }
 
 
-    private static void StartServer(){
+    private void StartServer(){
         Server=new TCPServer();
         Server.setDaemon(true);
         Server.start();
     }
 
-    private static class TCPServer extends Thread {
+    private class TCPServer extends Thread {
 
         private final int PORT_NUMBER=8888;
         ServerSocket SERVER=null;
@@ -233,21 +258,8 @@ public class Main {
                 while(true)
                 {
                     Socket connectionSocket = SERVER.accept();
-                    BufferedReader inFromClient =
-                            new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-                    DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-                    clientSentence = inFromClient.readLine();
-
-                    /* Platform.runLater(new Runnable() {
-                         @Override
-                         public void run() {
-                            executeCommand(COMMAND_1);
-                          }
-                            });*/
-                    int ret=executeCommand(Integer.parseInt(clientSentence));
-
-                    capitalizedSentence = String.valueOf(ret)+ '\n';
-                    outToClient.writeBytes(capitalizedSentence);
+                    Runnable r = new CommandExecutor(connectionSocket);
+                    new Thread(r).start();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -264,6 +276,63 @@ public class Main {
             }
         }
 
+    }
+
+    private class CommandExecutor implements Runnable{
+
+        private static final String TYPE_ADD_ROOM="room";
+        private static final String TYPE_ADD_USER="user";
+        private static final String TYPE_EXEC_COMMAND="command";
+        private static final String TYPE_UPDATE_REQUEST="update";
+
+
+        private Socket connectionSocket;
+
+        public CommandExecutor( Socket connecSocket){
+            this.connectionSocket=connecSocket;
+        }
+
+        @Override
+        public void run() {
+            String clientSentence;
+            String serverSentence;
+
+
+            try {
+                BufferedReader inFromClient =
+                        new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+                DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+
+                clientSentence = inFromClient.readLine();
+                if(clientSentence.equalsIgnoreCase(TYPE_ADD_ROOM)){
+                    serverSentence = Constants.SEND_WAIT_MESSAGE;
+                    outToClient.writeBytes(serverSentence);
+
+                }
+
+                if(clientSentence.equalsIgnoreCase(TYPE_ADD_USER)){
+
+                }
+
+                if(clientSentence.equalsIgnoreCase(TYPE_EXEC_COMMAND)){
+
+                }
+                if(clientSentence.equalsIgnoreCase(TYPE_UPDATE_REQUEST)){
+
+                }
+
+
+                //int ret=executeCommand(Integer.parseInt(clientSentence));
+
+                //serverSentence = String.valueOf(ret)+ '\n';
+                //outToClient.writeBytes(serverSentence);
+
+                connectionSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 }
