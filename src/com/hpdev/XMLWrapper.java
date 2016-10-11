@@ -8,23 +8,23 @@ import java.util.ArrayList;
 public class XMLWrapper {
 
     private String Loginkey;
-    private ArrayList<Pin> pinList;
+    private ArrayList<XMLRoom> RoomList;
 
 
     public XMLWrapper(String loginkey) {
         Loginkey = loginkey;
-        pinList=new ArrayList<Pin>();
+        RoomList =new ArrayList<XMLRoom>();
     }
 
     public String getLoginkey() {
         return Loginkey;
     }
 
-    public void addPin(Pin pin){
-        pinList.add(pin);
+    public void setXMLRoomList(ArrayList<XMLRoom> room){
+        RoomList=room;
     }
 
-    public ArrayList<Pin> getPinList() {
-        return pinList;
+    public ArrayList<XMLRoom> getXMLRoomList() {
+        return RoomList;
     }
 }

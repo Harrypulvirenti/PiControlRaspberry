@@ -6,34 +6,41 @@ import java.util.ArrayList;
  * Created by harry on 09/10/2016.
  */
 public class GPIOUser {
-    public final static int TYPE_ACTUATOR=0;
-    public final static int TYPE_SENSOR_DH11=1;
 
-    private ArrayList<Pin> myPin;
+    private ArrayList<GPIOPin> PinList;
     private String GPIOUserName;
-    private int GPIOType;
+    private int GPIOUserType;
     private int pinNumber;
 
     public GPIOUser(String GPIOUserName, int GPIOType, int pinNumber) {
         this.GPIOUserName = GPIOUserName;
-        this.GPIOType = GPIOType;
+        this.GPIOUserType = GPIOType;
         this.pinNumber = pinNumber;
+        PinList=new ArrayList<GPIOPin>();
     }
 
-    public void addUserPin(Pin pin){
-        myPin.add(pin);
+    public GPIOUser (XMLUser user,ArrayList<GPIOPin> list){
+        this.GPIOUserName=user.getUserName();
+        this.GPIOUserType=user.getType();
+        this.pinNumber=user.getPinNumber();
+        PinList=list;
     }
 
-    public ArrayList<Pin> getMyPin() {
-        return myPin;
+
+    public void addUserPin(GPIOPin pin){
+        PinList.add(pin);
+    }
+
+    public ArrayList<GPIOPin> getPinList() {
+        return PinList;
     }
 
     public String getGPIOUserName() {
         return GPIOUserName;
     }
 
-    public int getGPIOType() {
-        return GPIOType;
+    public int getGPIOUserType() {
+        return GPIOUserType;
     }
 
     public int getPinNumber() {

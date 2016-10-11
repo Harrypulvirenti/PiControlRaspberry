@@ -28,13 +28,14 @@ public class Main {
     private TCPServer Server=null;
     private GPIOController controllerGPIO;
     private String LoginKey;
-    private  XMLWrapper fileWrapper=null;
-    private ArrayList<Room> roomList;
+    private XMLWrapper fileWrapper=null;
+    private ArrayList<GPIORoom> GPIORoomList;
 
 
     public static void main(String[] args) {
 
         Main myExecution=new Main();
+        myExecution.GPIORoomList =new ArrayList<GPIORoom>();
 
         if(args.length == 0){
             if(!myExecution.loadBackupFile()){
@@ -55,9 +56,6 @@ public class Main {
         //pin=GPIO.getDigitalOutputPin("led");
         
         if(!myExecution.isFileWrapperEmpty()){
-            myExecution.initGPIOPin();
-            
-        }else{
             myExecution.initRoomList();
         }
 
@@ -69,8 +67,41 @@ public class Main {
 
     }
 
+    private void addRoom(String name) {
+        GPIORoomList.add(new GPIORoom(name));
+        storeBackupFile();
+    }
+
+    private void initGPIOPin() {
+
+
+    }
+
+
     public void initRoomList(){
-        roomList=new ArrayList<Room>();
+
+        ArrayList<XMLRoom> roomList=fileWrapper.getXMLRoomList();
+
+        for(int i=0;i<roomList.size();i++){
+            XMLRoom room= roomList.get(i);
+            ArrayList<XMLUser> userList=room.getUserList();
+            ArrayList<GPIOUser> GPIOUserList=new ArrayList<GPIOUser>();
+            for(int j=0;j<userList.size();j++){
+                XMLUser user=userList.get(j);
+                ArrayList<XMLPin> xmlPin=user.getPinList();
+                ArrayList<GPIOPin> gpioPins=new ArrayList<GPIOPin>();
+                for(int k=0;k<xmlPin.size();k++){
+                    XMLPin pin=xmlPin.get(k);
+                    gpioPins.add(new GPIOPin(pin));
+                }
+                GPIOUserList.add(new GPIOUser(user,gpioPins));
+            }
+            GPIORoomList.add(new GPIORoom(room.getName(),GPIOUserList));
+
+
+        }
+
+
     }
 
     public void setLoginKey(String loginKey) {
@@ -87,18 +118,37 @@ public class Main {
     }
 
 
-    private void initGPIOPin() {
 
-
-
-
-    }
 
     private void storeBackupFile() {
         XStream xstream = new XStream(new DomDriver());
 
 
         XMLWrapper xmlWrapper=new XMLWrapper(LoginKey);
+
+        ArrayList<XMLRoom> roomList=new ArrayList<XMLRoom>();
+
+        for(int i=0;i<GPIORoomList.size();i++){
+            GPIORoom room= GPIORoomList.get(i);
+            ArrayList<GPIOUser> userList=room.getUserList();
+            ArrayList<XMLUser> xmlUser=new ArrayList<XMLUser>();
+            for(int j=0;j<userList.size();j++){
+                GPIOUser user=userList.get(j);
+                ArrayList<GPIOPin> pinList=user.getPinList();
+                ArrayList<XMLPin> xmlPin=new ArrayList<XMLPin>();
+                for(int k=0;k<pinList.size();k++){
+                    GPIOPin pin=pinList.get(k);
+                    xmlPin.add(new XMLPin(pin.getPinNumber(),pin.getPinIdentifier(),pin.getPinType()));
+                }
+                xmlUser.add(new XMLUser(user.getGPIOUserName(),user.getGPIOUserType(),xmlPin));
+            }
+
+            roomList.add(new XMLRoom(room.getName(),xmlUser));
+
+        }
+
+        xmlWrapper.setXMLRoomList(roomList);
+
 
         String xml = xstream.toXML(xmlWrapper);
 
@@ -305,8 +355,13 @@ public class Main {
 
                 clientSentence = inFromClient.readLine();
                 if(clientSentence.equalsIgnoreCase(TYPE_ADD_ROOM)){
-                    serverSentence = Constants.SEND_WAIT_MESSAGE;
+                    serverSentence = Constants.SEND_WAIT_MESSAGE+"\n";
                     outToClient.writeBytes(serverSentence);
+                    clientSentence = inFromClient.readLine();
+                    serverSentence = Constants.DONE_MESSAGE+"\n";
+                    outToClient.writeBytes(serverSentence);
+                    connectionSocket.close();
+                    addRoom(clientSentence);
 
                 }
 
@@ -327,12 +382,14 @@ public class Main {
                 //serverSentence = String.valueOf(ret)+ '\n';
                 //outToClient.writeBytes(serverSentence);
 
-                connectionSocket.close();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         }
     }
+
+
 
 }
