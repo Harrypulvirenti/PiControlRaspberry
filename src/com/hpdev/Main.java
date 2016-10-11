@@ -344,8 +344,8 @@ public class Main {
 
         @Override
         public void run() {
-            String clientSentence;
-            String serverSentence;
+            String clientSentence="";
+            String serverSentence="";
 
 
             try {
@@ -354,6 +354,8 @@ public class Main {
                 DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 
                 clientSentence = inFromClient.readLine();
+                if(clientSentence.length()>0){
+
                 if(clientSentence.equalsIgnoreCase(TYPE_ADD_ROOM)){
                     serverSentence = Constants.SEND_WAIT_MESSAGE+"\n";
                     outToClient.writeBytes(serverSentence);
@@ -373,8 +375,22 @@ public class Main {
 
                 }
                 if(clientSentence.equalsIgnoreCase(TYPE_UPDATE_REQUEST)){
+                    serverSentence = Constants.SEND_WAIT_MESSAGE+"\n";
+                    outToClient.writeBytes(serverSentence);
 
-                }
+                    String lines[] = getXMLUpdate().split("\\r?\\n");
+
+                    for(int i=0;i<lines.length;i++){
+                        outToClient.writeBytes(lines[i]+"\n");
+                    }
+
+                    serverSentence=Constants.DONE_MESSAGE+"\n";
+                    outToClient.writeBytes(serverSentence);
+
+                    connectionSocket.close();
+
+
+                }}
 
 
                 //int ret=executeCommand(Integer.parseInt(clientSentence));
@@ -390,6 +406,38 @@ public class Main {
         }
     }
 
+    private String getXMLUpdate() {
+        XStream xstream = new XStream(new DomDriver());
+
+
+        XMLWrapper xmlWrapper=new XMLWrapper(LoginKey);
+
+        ArrayList<XMLRoom> roomList=new ArrayList<XMLRoom>();
+
+        for(int i=0;i<GPIORoomList.size();i++){
+            GPIORoom room= GPIORoomList.get(i);
+            ArrayList<GPIOUser> userList=room.getUserList();
+            ArrayList<XMLUser> xmlUser=new ArrayList<XMLUser>();
+            for(int j=0;j<userList.size();j++){
+                GPIOUser user=userList.get(j);
+                ArrayList<GPIOPin> pinList=user.getPinList();
+                ArrayList<XMLPin> xmlPin=new ArrayList<XMLPin>();
+                for(int k=0;k<pinList.size();k++){
+                    GPIOPin pin=pinList.get(k);
+                    xmlPin.add(new XMLPin(pin.getPinNumber(),pin.getPinIdentifier(),pin.getPinType()));
+                }
+                xmlUser.add(new XMLUser(user.getGPIOUserName(),user.getGPIOUserType(),xmlPin));
+            }
+
+            roomList.add(new XMLRoom(room.getName(),xmlUser));
+
+        }
+
+        xmlWrapper.setXMLRoomList(roomList);
+
+
+        return xstream.toXML(xmlWrapper);
+    }
 
 
 }
