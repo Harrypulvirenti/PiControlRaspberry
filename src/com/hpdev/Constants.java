@@ -17,8 +17,8 @@ public class Constants {
     public static final String SEND_WAIT_MESSAGE="ok_send_me";
 	public static final String DONE_MESSAGE="done";
 
-    public final static int TYPE_ACTUATOR=0;
-    public final static int TYPE_SENSOR_DH11=1;
+    public final static int USER_TYPE_RELAY=0;
+    public final static int USER_TYPE_SENSOR_DH11=1;
 
     public final static int ANALOG_INPUT=0;
     public final static int ANALOG_OUTPUT=1;

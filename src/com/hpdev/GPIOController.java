@@ -17,25 +17,39 @@ import java.util.ArrayList;
  * @author harry
  */
 public class GPIOController {
-    private final int GPIO_TOTAL=30;
-    private ArrayList<GPIOPin> allPin;
-    private GpioController GPIO;
-    public final int LOW=0;
-    public final int HIGH=1;
-    
-    public GPIOController() {
+    private static final int GPIO_TOTAL=30;
+    private static ArrayList<GPIOPin> allPin;
+    private static GpioController GPIO;
+    public static final int LOW=0;
+    public static final int HIGH=1;
+
+
+    public static void initIstance(ArrayList<XMLRoom> list){
+        GPIO = GpioFactory.getInstance();
+        allPin=new ArrayList<>();
+        initPin(list);
+    }
+
+    private static void initPin(ArrayList<XMLRoom> list){
+        for(int i=0;i<GPIO_TOTAL;i++){
+            allPin.add(i, new GPIOPin(false, i));
+        }
+    }
+
+
+    public static void initIstance(){
         GPIO = GpioFactory.getInstance();
         allPin=new ArrayList<>();
         initPin();
     }
     
-   private void initPin(){
+   private static void initPin(){
         for(int i=0;i<GPIO_TOTAL;i++){
            allPin.add(i, new GPIOPin(false, i));
         }
     }
    
-  public int getDigitalOutputPin(String identifier){
+  public static GPIOPin getDigitalOutputPin(String identifier){
       int pinNumber=getFreePin();
       GpioPinDigitalOutput GPIOPin=null;
       switch(pinNumber){
@@ -136,10 +150,10 @@ public class GPIOController {
 
      allPin.remove(pinNumber);
      allPin.add(pinNumber, newPin);
-      return pinNumber;
+      return newPin;
   }
   
-  public void setDigitalPinState(int pinNumber,int state){
+  public static void setDigitalPinState(int pinNumber,int state){
       if(state==LOW){
           allPin.get(pinNumber).getDigitalOutput().low();
       }else{
@@ -148,13 +162,22 @@ public class GPIOController {
   
   }
   
-  private int getFreePin(){
+  private static int getFreePin(){
       int i;
       for(i=0;i<GPIO_TOTAL;i++){
           if(!allPin.get(i).isPinUsed())
               break;
       }
   return i;
+  }
+
+  public static int totalFreePin(){
+      int tot=0;
+      for(int i=0;i<GPIO_TOTAL;i++){
+          if(!allPin.get(i).isPinUsed())
+              tot++;
+      }
+      return tot;
   }
     
 }

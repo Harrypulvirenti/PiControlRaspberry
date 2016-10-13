@@ -26,7 +26,6 @@ public class Main {
 
     private String IP=null;
     private TCPServer Server=null;
-    private GPIOController controllerGPIO;
     private String LoginKey;
     private XMLWrapper fileWrapper=null;
     private ArrayList<GPIORoom> GPIORoomList;
@@ -52,11 +51,12 @@ public class Main {
 
         System.out.println(Constants.LOGIN_MESSAGE+myExecution.LoginKey);
 
-        //GPIO=new GPIOController();
-        //pin=GPIO.getDigitalOutputPin("led");
         
         if(!myExecution.isFileWrapperEmpty()){
             myExecution.initRoomList();
+            GPIOController.initIstance(myExecution.getFileWrapper().getXMLRoomList());
+        }else{
+            GPIOController.initIstance();
         }
 
         myExecution.StartIPUpdater();
@@ -72,9 +72,8 @@ public class Main {
         storeBackupFile();
     }
 
-    private void initGPIOPin() {
-
-
+    private XMLWrapper getFileWrapper(){
+        return fileWrapper;
     }
 
 
@@ -216,11 +215,6 @@ public class Main {
     }
 
 
-    private static int executeCommand(int command){
-        return 0;
-    }
-
-
 
     private class IPUpdater extends TimerTask{
 
@@ -346,6 +340,7 @@ public class Main {
         public void run() {
             String clientSentence="";
             String clientSentence2="";
+            String clientSentence3="";
             String serverSentence="";
 
 
@@ -370,6 +365,32 @@ public class Main {
                 }
 
                 if(clientSentence.equalsIgnoreCase(TYPE_ADD_USER)){
+                    serverSentence = Constants.SEND_WAIT_MESSAGE+"\n";
+                    outToClient.writeBytes(serverSentence);
+                    clientSentence3 = inFromClient.readLine();
+                    int totFree=GPIOController.totalFreePin();
+                    int totRequired=0;
+                    switch (Integer.parseInt(clientSentence3)){
+                        case Constants.USER_TYPE_RELAY:
+                            totRequired=Relay.PIN_NUMBER;
+                            break;
+                        case Constants.USER_TYPE_SENSOR_DH11:
+
+                            break;
+
+                    }
+                    if(totFree>=totRequired){
+                        serverSentence = Constants.SEND_WAIT_MESSAGE+"\n";
+                        outToClient.writeBytes(serverSentence);
+                        clientSentence = inFromClient.readLine();
+                        clientSentence2 = inFromClient.readLine();
+                        serverSentence = Constants.DONE_MESSAGE+"\n";
+                        outToClient.writeBytes(serverSentence);
+                        connectionSocket.close();
+                        addUserToRoom(clientSentence,clientSentence2,Integer.parseInt(clientSentence3));
+                    }else{
+                        connectionSocket.close();
+                    }
 
                 }
 
@@ -406,6 +427,27 @@ public class Main {
             }
 
         }
+    }
+
+    private void addUserToRoom(String UserName, String RoomName,int UserType) {
+
+        for(int i=0;i<GPIORoomList.size();i++){
+            GPIORoom room=GPIORoomList.get(i);
+            if(room.getName().equalsIgnoreCase(RoomName)){
+                switch (UserType){
+                    case Constants.USER_TYPE_RELAY:
+                        room.addUser(new Relay(UserName));
+                        break;
+                    case Constants.USER_TYPE_SENSOR_DH11:
+
+                        break;
+                }
+                GPIORoomList.remove(i);
+                GPIORoomList.add(i,room);
+                break;
+            }
+        }
+
     }
 
     private String getXMLUpdate() {
