@@ -67,8 +67,8 @@ public class Main {
 
     }
 
-    private void addRoom(String name) {
-        GPIORoomList.add(new GPIORoom(name));
+    private void addRoom(String name,int roomType) {
+        GPIORoomList.add(new GPIORoom(name,roomType));
         storeBackupFile();
     }
 
@@ -96,7 +96,7 @@ public class Main {
                 }
                 GPIOUserList.add(new GPIOUser(user,gpioPins));
             }
-            GPIORoomList.add(new GPIORoom(room.getName(),GPIOUserList));
+            GPIORoomList.add(new GPIORoom(room.getName(),GPIOUserList,room.getRoomType()));
 
 
         }
@@ -143,7 +143,7 @@ public class Main {
                 xmlUser.add(new XMLUser(user.getGPIOUserName(),user.getGPIOUserType(),xmlPin));
             }
 
-            roomList.add(new XMLRoom(room.getName(),xmlUser));
+            roomList.add(new XMLRoom(room.getName(),xmlUser,room.getRoomType()));
 
         }
 
@@ -345,6 +345,7 @@ public class Main {
         @Override
         public void run() {
             String clientSentence="";
+            String clientSentence2="";
             String serverSentence="";
 
 
@@ -360,10 +361,11 @@ public class Main {
                     serverSentence = Constants.SEND_WAIT_MESSAGE+"\n";
                     outToClient.writeBytes(serverSentence);
                     clientSentence = inFromClient.readLine();
+                    clientSentence2 = inFromClient.readLine();
                     serverSentence = Constants.DONE_MESSAGE+"\n";
                     outToClient.writeBytes(serverSentence);
                     connectionSocket.close();
-                    addRoom(clientSentence);
+                    addRoom(clientSentence,Integer.parseInt(clientSentence2));
 
                 }
 
@@ -429,7 +431,7 @@ public class Main {
                 xmlUser.add(new XMLUser(user.getGPIOUserName(),user.getGPIOUserType(),xmlPin));
             }
 
-            roomList.add(new XMLRoom(room.getName(),xmlUser));
+            roomList.add(new XMLRoom(room.getName(),xmlUser,room.getRoomType()));
 
         }
 

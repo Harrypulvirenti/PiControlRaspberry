@@ -11,9 +11,13 @@ public class XMLRoom {
     private String Name;
     private ArrayList<XMLUser> userList;
 
-    public XMLRoom(String name, ArrayList<XMLUser> user) {
+    private int RoomType=0;
+
+
+    public XMLRoom(String name, ArrayList<XMLUser> userList, int roomType) {
         Name = name;
-        userList=user;
+        this.userList = userList;
+        RoomType = roomType;
     }
 
     public String getName() {
@@ -22,5 +26,9 @@ public class XMLRoom {
 
     public ArrayList<XMLUser> getUserList() {
         return userList;
+    }
+
+    public int getRoomType() {
+        return RoomType;
     }
 }

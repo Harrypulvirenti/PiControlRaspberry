@@ -25,4 +25,11 @@ public class Constants {
     public final static int DIGITAL_INPUT=2;
     public final static int DIGITAL_OUTPUT=3;
 
+    public final static int TYPE_ROOM=0;
+    public final static int TYPE_LIVING_ROOM=1;
+    public final static int TYPE_BED_ROOM=2;
+    public final static int TYPE_KITCHEN_ROOM=3;
+    public final static int TYPE_SWIMMING_POOL_ROOM=4;
+    public final static int TYPE_GARDEN_ROOM=5;
+
 }
