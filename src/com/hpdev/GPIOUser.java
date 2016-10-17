@@ -11,6 +11,7 @@ public class GPIOUser {
     private String GPIOUserName;
     private int GPIOUserType;
     private int pinNumber;
+    private int CommandCount;
 
     public GPIOUser(String GPIOUserName, int GPIOType, int pinNumber) {
         this.GPIOUserName = GPIOUserName;
@@ -46,4 +47,14 @@ public class GPIOUser {
     public int getPinNumber() {
         return pinNumber;
     }
+
+    public int getCommandCount() {
+        return CommandCount;
+    }
+
+    public void setCommandCount(int commandCount) {
+        CommandCount = commandCount;
+    }
+
+    public Object executeCommand(int command){return null;};
 }

@@ -384,10 +384,17 @@ public class Main {
                         outToClient.writeBytes(serverSentence);
                         clientSentence = inFromClient.readLine();
                         clientSentence2 = inFromClient.readLine();
+
+                        ArrayList<GPIOPin> list=addUserToRoom(clientSentence,clientSentence2,Integer.parseInt(clientSentence3));
+
+                        for(int i=0;i<list.size();i++){
+                            serverSentence = list.get(i).getPinNumber()+"\n";
+                            outToClient.writeBytes(serverSentence);
+                        }
                         serverSentence = Constants.DONE_MESSAGE+"\n";
                         outToClient.writeBytes(serverSentence);
                         connectionSocket.close();
-                        addUserToRoom(clientSentence,clientSentence2,Integer.parseInt(clientSentence3));
+
                     }else{
                         connectionSocket.close();
                     }
@@ -395,8 +402,25 @@ public class Main {
                 }
 
                 if(clientSentence.equalsIgnoreCase(TYPE_EXEC_COMMAND)){
+                    serverSentence = Constants.SEND_WAIT_MESSAGE+"\n";
+                    outToClient.writeBytes(serverSentence);
+
+                    clientSentence = inFromClient.readLine();
+                    clientSentence2 = inFromClient.readLine();
+                    clientSentence3= inFromClient.readLine();
+
+                    serverSentence = execClientCommand(new Command(clientSentence,clientSentence2,Integer.parseInt(clientSentence3)))+"\n";
+                    outToClient.writeBytes(serverSentence);
+                    serverSentence = Constants.DONE_MESSAGE+"\n";
+                    outToClient.writeBytes(serverSentence);
+                    connectionSocket.close();
+
 
                 }
+
+
+
+
                 if(clientSentence.equalsIgnoreCase(TYPE_UPDATE_REQUEST)){
                     serverSentence = Constants.SEND_WAIT_MESSAGE+"\n";
                     outToClient.writeBytes(serverSentence);
@@ -429,25 +453,53 @@ public class Main {
         }
     }
 
-    private void addUserToRoom(String UserName, String RoomName,int UserType) {
+    private Object execClientCommand(Command command) {
+
+        for(int i=0;i<GPIORoomList.size();i++){
+            if(command.getRoomName().equalsIgnoreCase(GPIORoomList.get(i).getName())){
+                ArrayList<GPIOUser> users=GPIORoomList.get(i).getUserList();
+
+                for (int k=0;k<users.size();k++){
+
+                    if(command.getUserName().equalsIgnoreCase(users.get(k).getGPIOUserName())){
+                        return users.get(k).executeCommand(command.getCommand());
+                    }
+                }
+            }
+
+        }
+        return null;
+    }
+
+    private ArrayList<GPIOPin> addUserToRoom(String UserName, String RoomName, int UserType) {
 
         for(int i=0;i<GPIORoomList.size();i++){
             GPIORoom room=GPIORoomList.get(i);
             if(room.getName().equalsIgnoreCase(RoomName)){
                 switch (UserType){
                     case Constants.USER_TYPE_RELAY:
-                        room.addUser(new Relay(UserName));
-                        break;
+                        Relay rel=new Relay(UserName);
+                        room.addUser(rel);
+                        GPIORoomList.remove(i);
+                        GPIORoomList.add(i,room);
+                        storeBackupFile();
+                        return rel.getPinList();
                     case Constants.USER_TYPE_SENSOR_DH11:
-
-                        break;
+                        DHT11 dh11=new DHT11(UserName);
+                        room.addUser(dh11);
+                        GPIORoomList.remove(i);
+                        GPIORoomList.add(i,room);
+                        storeBackupFile();
+                        return dh11.getPinList();
                 }
-                GPIORoomList.remove(i);
-                GPIORoomList.add(i,room);
+
                 break;
             }
         }
 
+
+
+        return null;
     }
 
     private String getXMLUpdate() {

@@ -9,11 +9,19 @@ public class Relay extends GPIOUser {
 
     public final static int PIN_NUMBER=1;
 
+    public static final int COMMAND_COUNT=4;
+
+    public static final int COMMAND_TURN_ON_NO=0;
+    public static final int COMMAND_TURN_OFF_NO=1;
+    public static final int COMMAND_TURN_ON_NC=2;
+    public static final int COMMAND_TURN_OFF_NC=3;
+
 
     public Relay(String GPIOUserName) {
         super(GPIOUserName, Constants.USER_TYPE_RELAY, PIN_NUMBER);
         GPIOPin pin= GPIOController.getDigitalOutputPin(GPIOUserName);
         addUserPin(pin);
+        setCommandCount(COMMAND_COUNT);
     }
 
     public Relay(XMLUser user, ArrayList<GPIOPin> list) {
@@ -33,4 +41,22 @@ public class Relay extends GPIOUser {
         GPIOController.setDigitalPinState(getPinList().get(0).getPinNumber(),GPIOController.HIGH);
     }
 
+    @Override
+    public Object executeCommand(int command) {
+        switch (command){
+            case COMMAND_TURN_ON_NO:
+                turnON_NO();
+                break;
+            case COMMAND_TURN_OFF_NO:
+                turnOFF_NO();
+                break;
+            case COMMAND_TURN_ON_NC:
+                turnON_NC();
+                break;
+            case COMMAND_TURN_OFF_NC:
+                turnOFF_NC();
+                break;
+        }
+        return null;
+    }
 }

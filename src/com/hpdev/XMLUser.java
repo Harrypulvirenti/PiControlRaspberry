@@ -13,6 +13,7 @@ public class XMLUser {
     private int Type;
     private int pinNumber;
 
+
     public XMLUser(String UserName, int Type, ArrayList<XMLPin> pins) {
         this.UserName = UserName;
         this.Type = Type;
@@ -35,4 +36,6 @@ public class XMLUser {
     public int getPinNumber() {
         return pinNumber;
     }
+
+
 }

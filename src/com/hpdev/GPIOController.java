@@ -161,6 +161,17 @@ public class GPIOController {
       }
   
   }
+
+  public static GPIOPin getGPIOFreePin(String identifier){
+      int pinNumber=getFreePin();
+
+      GPIOPin newPin= new GPIOPin(true,pinNumber);
+      newPin.setPinIdentifier(identifier);
+
+      allPin.remove(pinNumber);
+      allPin.add(pinNumber, newPin);
+      return newPin;
+  }
   
   private static int getFreePin(){
       int i;
