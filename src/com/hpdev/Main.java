@@ -53,8 +53,8 @@ public class Main {
 
         
         if(!myExecution.isFileWrapperEmpty()){
+            GPIOController.initIstance();
             myExecution.initRoomList();
-            GPIOController.initIstance(myExecution.getFileWrapper().getXMLRoomList());
         }else{
             GPIOController.initIstance();
         }
@@ -93,7 +93,18 @@ public class Main {
                     XMLPin pin=xmlPin.get(k);
                     gpioPins.add(new GPIOPin(pin));
                 }
-                GPIOUserList.add(new GPIOUser(user,gpioPins));
+
+
+                switch (user.getType()){
+                    case Constants.USER_TYPE_RELAY:
+                        GPIOUserList.add(new Relay(user,gpioPins));
+                        break;
+                    case Constants.USER_TYPE_SENSOR_DH11:
+                        GPIOUserList.add(new DHT11(user,gpioPins));
+                        break;
+                }
+
+
             }
             GPIORoomList.add(new GPIORoom(room.getName(),GPIOUserList,room.getRoomType()));
 
@@ -402,12 +413,14 @@ public class Main {
                 }
 
                 if(clientSentence.equalsIgnoreCase(TYPE_EXEC_COMMAND)){
+
                     serverSentence = Constants.SEND_WAIT_MESSAGE+"\n";
                     outToClient.writeBytes(serverSentence);
 
                     clientSentence = inFromClient.readLine();
                     clientSentence2 = inFromClient.readLine();
                     clientSentence3= inFromClient.readLine();
+
 
                     serverSentence = execClientCommand(new Command(clientSentence,clientSentence2,Integer.parseInt(clientSentence3)))+"\n";
                     outToClient.writeBytes(serverSentence);
@@ -454,6 +467,9 @@ public class Main {
     }
 
     private Object execClientCommand(Command command) {
+
+       // GPIOController.setDigitalPinState(0,GPIOController.HIGH);
+
 
         for(int i=0;i<GPIORoomList.size();i++){
             if(command.getRoomName().equalsIgnoreCase(GPIORoomList.get(i).getName())){

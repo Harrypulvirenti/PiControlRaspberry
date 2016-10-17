@@ -25,7 +25,10 @@ public class Relay extends GPIOUser {
     }
 
     public Relay(XMLUser user, ArrayList<GPIOPin> list) {
-        super(user, list);
+        super(user.getUserName(), Constants.USER_TYPE_RELAY, PIN_NUMBER);
+        GPIOPin pin= GPIOController.getDigitalOutputPin(user.getUserName(),list.get(0).getPinNumber());
+        addUserPin(pin);
+        setCommandCount(COMMAND_COUNT);
     }
 
     public void turnON_NO(){
@@ -43,6 +46,7 @@ public class Relay extends GPIOUser {
 
     @Override
     public Object executeCommand(int command) {
+
         switch (command){
             case COMMAND_TURN_ON_NO:
                 turnON_NO();

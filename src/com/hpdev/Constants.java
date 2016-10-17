@@ -32,4 +32,7 @@ public class Constants {
     public final static int TYPE_SWIMMING_POOL_ROOM=4;
     public final static int TYPE_GARDEN_ROOM=5;
 
+    public final static String RESULT_TYPE_RELAY="Relay";
+    public final static String RESULT_TYPE_DHT11="DHT11";
+
 }

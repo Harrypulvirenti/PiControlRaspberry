@@ -34,7 +34,13 @@ public class DHT11 extends GPIOUser {
     }
 
     public DHT11(XMLUser user, ArrayList<GPIOPin> list) {
-        super(user, list);
+        super(user.getUserName(), Constants.USER_TYPE_SENSOR_DH11, PIN_NUMBER);
+
+        GPIOPin pin= GPIOController.getGPIOFreePin(user.getUserName(),list.get(0).getPinNumber());
+        addUserPin(pin);
+        setCommandCount(COMMAND_COUNT);
+
+        GpioUtil.export(pin.getPinNumber(), GpioUtil.DIRECTION_OUT);
     }
 
     public String getData(){
@@ -83,28 +89,33 @@ public class DHT11 extends GPIOUser {
         // check we read 40 bits (8bit x 5 ) + verify checksum in the last
         // byte
         if ((j >= 40) && checkParity()) {
-            float h = (float) ((dht11_dat[0] << 8) + dht11_dat[1]) / 10;
+            Float h = (float) ((dht11_dat[0] << 8) + dht11_dat[1]) / 10;
             if (h > 100) {
-                h = dht11_dat[0];   // for DHT11
+                h = (float) dht11_dat[0];   // for DHT11
             }
-            float c = (float) (((dht11_dat[2] & 0x7F) << 8) + dht11_dat[3]) / 10;
+            Float c = (float) (((dht11_dat[2] & 0x7F) << 8) + dht11_dat[3]) / 10;
             if (c > 125) {
-                c = dht11_dat[2];   // for DHT11
+                c = (float) dht11_dat[2];   // for DHT11
             }
             if ((dht11_dat[2] & 0x80) != 0) {
                 c = -c;
             }
             float f = c * 1.8f + 32;
-            ret= c+"-"+h;
+            ret= Constants.RESULT_TYPE_DHT11+"-"+c.intValue()+"-"+h.intValue();
+        } else {
+            ret= null;
+        }
+
+        if(ret==null){
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        } else {
-            ret= null;
-        }}
-        return null;
+        }
+
+        }
+        return ret;
     }
 
     @Override
