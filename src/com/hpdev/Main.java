@@ -361,6 +361,8 @@ public class Main {
                 DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 
                 clientSentence = inFromClient.readLine();
+
+                if(clientSentence!=null){
                 if(clientSentence.length()>0){
 
                 if(clientSentence.equalsIgnoreCase(TYPE_ADD_ROOM)){
@@ -421,7 +423,6 @@ public class Main {
                     clientSentence2 = inFromClient.readLine();
                     clientSentence3= inFromClient.readLine();
 
-
                     serverSentence = execClientCommand(new Command(clientSentence,clientSentence2,Integer.parseInt(clientSentence3)))+"\n";
                     outToClient.writeBytes(serverSentence);
                     serverSentence = Constants.DONE_MESSAGE+"\n";
@@ -450,13 +451,8 @@ public class Main {
                     connectionSocket.close();
 
 
-                }}
+                }}}
 
-
-                //int ret=executeCommand(Integer.parseInt(clientSentence));
-
-                //serverSentence = String.valueOf(ret)+ '\n';
-                //outToClient.writeBytes(serverSentence);
 
 
             } catch (IOException e) {
@@ -468,15 +464,12 @@ public class Main {
 
     private Object execClientCommand(Command command) {
 
-       // GPIOController.setDigitalPinState(0,GPIOController.HIGH);
-
 
         for(int i=0;i<GPIORoomList.size();i++){
             if(command.getRoomName().equalsIgnoreCase(GPIORoomList.get(i).getName())){
                 ArrayList<GPIOUser> users=GPIORoomList.get(i).getUserList();
 
                 for (int k=0;k<users.size();k++){
-
                     if(command.getUserName().equalsIgnoreCase(users.get(k).getGPIOUserName())){
                         return users.get(k).executeCommand(command.getCommand());
                     }
