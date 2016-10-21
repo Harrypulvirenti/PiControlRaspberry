@@ -45,6 +45,7 @@ public class DHT11 extends GPIOUser {
 
     public String getData(){
         String ret=null;
+        int q=0;
 
         while (ret==null){
         int laststate = Gpio.HIGH;
@@ -113,6 +114,12 @@ public class DHT11 extends GPIOUser {
                 e.printStackTrace();
             }
         }
+
+        if(q==15){
+            ret= Constants.RESULT_TYPE_DHT11+"-error";
+        }
+
+        q++;
 
         }
         return ret;

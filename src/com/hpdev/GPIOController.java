@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * @author harry
  */
 public class GPIOController {
-    private static final int GPIO_TOTAL=30;
+    private static final int GPIO_TOTAL=26;
     private static ArrayList<GPIOPin> allPin;
     private static GpioController GPIO;
     public static final int LOW=0;
@@ -104,45 +104,34 @@ public class GPIOController {
               case 16:              
               GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_16, identifier, PinState.LOW);
               break;
-              case 17:              
-              GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_17, identifier, PinState.LOW);
+              case 17:
+                  GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_21, identifier, PinState.LOW);
               break;
-              case 18:              
-              GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_18, identifier, PinState.LOW);
+              case 18:
+                  GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_22, identifier, PinState.LOW);
               break;
-              case 19:              
-              GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_19, identifier, PinState.LOW);
+              case 19:
+                  GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_23, identifier, PinState.LOW);
               break;
               case 20:              
-              GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_20, identifier, PinState.LOW);
-              break;
-              case 21:              
-              GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_21, identifier, PinState.LOW);
-              break;
-              case 22:              
-              GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_22, identifier, PinState.LOW);
-              break;
-              case 23:              
-              GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_23, identifier, PinState.LOW);
-              break;
-              case 24:              
               GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_24, identifier, PinState.LOW);
               break;
-              case 25:              
+              case 21:              
               GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_25, identifier, PinState.LOW);
               break;
-              case 26:              
+              case 22:              
               GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_26, identifier, PinState.LOW);
               break;
-              case 27:              
+              case 23:              
               GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_27, identifier, PinState.LOW);
               break;
-              case 28:              
+              case 24:              
               GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_28, identifier, PinState.LOW);
               break;
-              case 29:              
+              case 25:              
               GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_29, identifier, PinState.LOW);
               break;
+
       }
      GPIOPin.setShutdownOptions(true, PinState.LOW);
      GPIOPin newPin= new GPIOPin(pinNumber, GPIOPin);
@@ -246,44 +235,33 @@ public class GPIOController {
                 GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_16, identifier, PinState.LOW);
                 break;
             case 17:
-                GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_17, identifier, PinState.LOW);
-                break;
-            case 18:
-                GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_18, identifier, PinState.LOW);
-                break;
-            case 19:
-                GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_19, identifier, PinState.LOW);
-                break;
-            case 20:
-                GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_20, identifier, PinState.LOW);
-                break;
-            case 21:
                 GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_21, identifier, PinState.LOW);
                 break;
-            case 22:
+            case 18:
                 GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_22, identifier, PinState.LOW);
                 break;
-            case 23:
+            case 19:
                 GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_23, identifier, PinState.LOW);
                 break;
-            case 24:
+            case 20:
                 GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_24, identifier, PinState.LOW);
                 break;
-            case 25:
+            case 21:
                 GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_25, identifier, PinState.LOW);
                 break;
-            case 26:
+            case 22:
                 GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_26, identifier, PinState.LOW);
                 break;
-            case 27:
+            case 23:
                 GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_27, identifier, PinState.LOW);
                 break;
-            case 28:
+            case 24:
                 GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_28, identifier, PinState.LOW);
                 break;
-            case 29:
+            case 25:
                 GPIOPin=GPIO.provisionDigitalOutputPin(RaspiPin.GPIO_29, identifier, PinState.LOW);
                 break;
+
         }
         GPIOPin.setShutdownOptions(true, PinState.LOW);
         GPIOPin newPin= new GPIOPin(pinNumber, GPIOPin);

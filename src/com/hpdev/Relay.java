@@ -61,6 +61,6 @@ public class Relay extends GPIOUser {
                 turnOFF_NC();
                 break;
         }
-        return null;
+        return Constants.RESULT_TYPE_RELAY+"-1";
     }
 }
