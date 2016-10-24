@@ -45,8 +45,13 @@ public class Main {
             System.out.println(Constants.Error_LoginKeyShort);
             System.exit(-1);
         } else{
-            myExecution.setLoginKey(args[0]);
-            myExecution.storeBackupFile();
+            myExecution.loadBackupFile();
+            if(!myExecution.LoginKey.equalsIgnoreCase(args[0])){
+                myExecution.setLoginKey(args[0]);
+                myExecution.GPIORoomList =new ArrayList<GPIORoom>();
+                myExecution.storeBackupFile();
+            }
+
         }
 
         System.out.println(Constants.LOGIN_MESSAGE+myExecution.LoginKey);
