@@ -43,24 +43,19 @@ public class DHT11 extends GPIOUser {
         GpioUtil.export(pin.getPinNumber(), GpioUtil.DIRECTION_OUT);
     }
 
-    public String getData(){
+    private String getData(){
         String ret=null;
         int q=0;
-
         while (ret==null){
         int laststate = Gpio.HIGH;
         int j = 0;
         dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
         int pin=getPinList().get(0).getPinNumber();
-
-
         Gpio.pinMode(pin, Gpio.OUTPUT);
         Gpio.digitalWrite(pin, Gpio.LOW);
         Gpio.delay(18);
-
         Gpio.digitalWrite(pin, Gpio.HIGH);
         Gpio.pinMode(pin, Gpio.INPUT);
-
         for (int i = 0; i < MAXTIMINGS; i++) {
             int counter = 0;
             while (Gpio.digitalRead(pin) == laststate) {
@@ -70,13 +65,10 @@ public class DHT11 extends GPIOUser {
                     break;
                 }
             }
-
             laststate = Gpio.digitalRead(pin);
-
             if (counter == 255) {
                 break;
             }
-
       /* ignore first 3 transitions */
             if ((i >= 4) && (i % 2 == 0)) {
          /* shove each bit into the storage bytes */

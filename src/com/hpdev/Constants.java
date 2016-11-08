@@ -13,6 +13,7 @@ public class Constants {
     public static final String KEY_PI_IP="pi_ip";
     public static final String BACKUP_FILE_NAME="backup.xml";
     public static final String LOGIN_MESSAGE="Inizializzazione servizi\n\nLogin Key: ";
+    public static final int PORT_NUMBER=8888;
 
     public static final String SEND_WAIT_MESSAGE="ok_send_me";
 	public static final String DONE_MESSAGE="done";
